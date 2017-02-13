@@ -175,17 +175,3 @@ function get_data_from_server(){
         console.log('End of click function');
     });
 }
-
-//its not just off a single occurance of what its looking for, its an escalated chance each time u look for it.
-//
-
-
-/* var question = null;
- var answer_one = null;
- var answer_two = null;
- var answer_three = null;
- var answer_correct = null;
- for(var i = 0; i < 3; i++){
- var question_index = Math.floor((Math.random() * 50) +1);
- question = obj.results[question_index].question;
- }*/
