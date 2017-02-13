@@ -7,6 +7,7 @@ $(document).ready(function() {
     $('.add_button').click(addClicked);
     $('.cancel_button').click(cancelClicked);
     deleteStudent();
+    get_data_from_server();
 
 });
 /**
@@ -59,6 +60,12 @@ function addStudent(){
         course: course,
         grade: grade
     };
+    if(name === '' || course === '' || grade === ''){
+        return;
+    }
+    if(grade < 0){
+        return;
+    }
     student_array.push(new_student_obj);
 }
 
@@ -86,6 +93,9 @@ function calculateAverage(arr){
     }
     var avg = total / arr.length;
     $('.avgGrade').text(Math.round(avg));
+    if(isNaN(avg)){
+        $('.avgGrade').text('0');
+    }
     return avg;
 }
 
@@ -138,8 +148,44 @@ function deleteStudent(){
 }
 
 function removeStudent(event){
-    var rowIndex = $(event.target).parent();
-    rowIndex = rowIndex[0].rowIndex;
-    student_array.splice(rowIndex-1, 1);
+    var row = $(event.target).parent();
+    row = row[0].rowIndex;
+    student_array.splice(row-1, 1);
     updateData();
 }
+
+function get_data_from_server(){
+    $('.data_button').click(function(){
+        console.log('click initiated');
+        $.ajax({
+            data: {'api_key': '8KyFdlyzfV' },
+            dataType: 'json',
+            url: 'http://s-apis.learningfuze.com/sgt/get',
+            method: "POST",
+            success: function(result) {
+                console.log('AJAX Success function called, with the following result:', result);
+                /*console.log(student_array);*/
+                student_array = student_array.concat(result.data);
+                updateData();
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+        console.log('End of click function');
+    });
+}
+
+//its not just off a single occurance of what its looking for, its an escalated chance each time u look for it.
+//
+
+
+/* var question = null;
+ var answer_one = null;
+ var answer_two = null;
+ var answer_three = null;
+ var answer_correct = null;
+ for(var i = 0; i < 3; i++){
+ var question_index = Math.floor((Math.random() * 50) +1);
+ question = obj.results[question_index].question;
+ }*/
