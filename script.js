@@ -7,13 +7,7 @@ $(document).ready(function() {
     $('.add_button').click(addClicked);
     $('.cancel_button').click(cancelClicked);
     deleteStudent();
-    $('.data_button').click(get_data_from_server);
-
-    $('body').on('keypress', function(e) {
-        if (e.key == 'Enter') {
-            addClicked();
-        }
-    });
+    get_data_from_server();
 
 });
 /**
@@ -26,16 +20,7 @@ $(document).ready(function() {
  * @type {Array} or Obj
  */
 var student_array = [];
-/**
- * inputIds - id's of the elements that are used to add students
- * @type {string[]}
- */
-var inputIds = null;
-const API_KEY = '8KyFdlyzfV';
 
-/**
- * addClicked - Event Handler when user clicks the add button
- */
 function addClicked(newData){
     //console.log('add button clicked');
     //call addstudent
@@ -45,19 +30,12 @@ function addClicked(newData){
     //call updateStudentList
     updateData();
 }
-/**
- * cancelClicked - Event Handler when user clicks the cancel button, should clear out student form
- */
+
 function cancelClicked(){
     //call clearAddStudentForm
     clearAddStudentForm();
 }
 
-/**
- * addStudent - creates a student objects based on input fields in the form and adds the object to global student array
- *
- * @return undefined
- */
 function addStudent(){
     var name = $('#student_name').val();
     var course = $('#student_course').val();
@@ -73,45 +51,15 @@ function addStudent(){
     if(grade < 0){
         return;
     }
-    //student_array.push(new_student_obj);
-    sendStudentToDatabase(new_student_obj);
+    student_array.push(new_student_obj);
 }
 
-function sendStudentToDatabase(studentObj) {
-    $.ajax({
-        method: 'POST',
-        url: 'http://s-apis.learningfuze.com/sgt/create',
-        dataType: 'json',
-        data: {
-            'api_key': '8KyFdlyzfV',
-            'name': studentObj.name,
-            'course': studentObj.course,
-            'grade': studentObj.grade
-        },
-        success: function(body) {
-            console.log(body);
-            get_data_from_server();
-        },
-        error: function(err) {
-            console.log(err);
-        }
-    })
-}
-
-
-/**
- * clearAddStudentForm - clears out the form values based on inputIds variable
- */
 function clearAddStudentForm(){
     $('#student_name').val('');
     $('#student_course').val('');
     $('#student_grade').val('');
 }
 
-/**
- * calculateAverage - loop through the global student array and calculate average grade and return that value
- * @returns {number}
- */
 function calculateAverage(arr){
     // shows average into span with all students combined average
     var result = [];
@@ -128,18 +76,11 @@ function calculateAverage(arr){
     return avg;
 }
 
-/**
- * updateData - centralized function to update the average and call student list update
- */
 function updateData(){
     updateStudentList(student_array);
     calculateAverage(student_array);
-    //renumberIdentification();
 }
 
-/**
- * updateStudentList - loops through global student array and appends each objects data into the student-list-container > list-body
- */
 function updateStudentList(arr){
     $('tbody').empty();
     for(var i = 0; i < arr.length; i++){
@@ -180,55 +121,30 @@ function deleteStudent(){
 function removeStudent(event){
     var row = $(event.target).parent();
     row = row[0].rowIndex;
-    //student_array.splice(row-1, 1);
-    removeStudentFromDatabase(row);
+    student_array.splice(row-1, 1);
     updateData();
 }
 
-function removeStudentFromDatabase(row) {
-    //181, 215, 221
-    var id = student_array[row - 1];
-    console.log(id.id);
-    $.ajax({
-        method: 'POST',
-        url: 'http://s-apis.learningfuze.com/sgt/delete',
-        data: {
-            api_key: API_KEY,
-            student_id: id
-        },
-        success: function(result) {
-            get_data_from_server();
-        },
-        error: function(err) {
-            console.log(err);
-        }
-    })
-
-}
-
-
 function get_data_from_server(){
-    console.log('click initiated');
-    $.ajax({
-        data: {'api_key': '8KyFdlyzfV' },
-        dataType: 'json',
-        url: 'http://s-apis.learningfuze.com/sgt/get',
-        method: "POST",
-        success: function(result) {
-            console.log('AJAX Success function called, with the following result:\n', result);
-            /*console.log(student_array);*/
-            student_array = result.data;
-            updateData();
-        },
-        error: function () {
-            console.log('error');
-        }
+    $('.data_button').click(function(){
+        console.log('click initiated');
+        $.ajax({
+            data: {'api_key': '8KyFdlyzfV' },
+            dataType: 'json',
+            url: 'http://s-apis.learningfuze.com/sgt/get',
+            method: "POST",
+            success: function(result) {
+                console.log('AJAX Success function called, with the following result:', result);
+                /*console.log(student_array);*/
+                student_array = student_array.concat(result.data);
+                updateData();
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+        console.log('End of click function');
     });
-    console.log('End of click function');
 }
 
-function renumberIdentification() {
-    for (var i = 0; i < student_array.length; i++) {
-        student_array[i].id = i + 1;
-    }
-}
+
