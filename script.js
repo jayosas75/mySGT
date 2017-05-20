@@ -1,28 +1,14 @@
-/**
- * Listen for the document to load and reset the data to the initial state
- */
-
 $(document).ready(function() {
     $('#student_grade').attr('type', 'number');
     $('.add_button').click(addClicked);
     $('.cancel_button').click(cancelClicked);
     deleteStudent();
     get_data_from_server();
-
 });
-/**
 
- * Define all global variables here
- */
+let student_array = [];
 
-/**
- * student_array - global array to hold student objects
- * @type {Array} or Obj
- */
-var student_array = [];
-
-function addClicked(newData){
-    //console.log('add button clicked');
+function addClicked(){
     //call addstudent
     addStudent();
     //call clearaddstudentform
@@ -37,10 +23,10 @@ function cancelClicked(){
 }
 
 function addStudent(){
-    var name = $('#student_name').val();
-    var course = $('#student_course').val();
-    var grade = $('#student_grade').val();
-    var new_student_obj = {
+    let name = $('#student_name').val();
+    let course = $('#student_course').val();
+    let grade = $('#student_grade').val();
+    let new_student_obj = {
         name: name,
         course: course,
         grade: grade
@@ -62,13 +48,13 @@ function clearAddStudentForm(){
 
 function calculateAverage(arr){
     // shows average into span with all students combined average
-    var result = [];
-    var total = 0;
-    for(var i = 0; i < arr.length; i++){
+    let result = [];
+    let total = 0;
+    for(let i = 0; i < arr.length; i++){
         result.push(arr[i].grade);
         total += parseFloat(arr[i].grade);
     }
-    var avg = total / arr.length;
+    let avg = total / arr.length;
     $('.avgGrade').text(Math.round(avg));
     if(isNaN(avg)){
         $('.avgGrade').text('0');
@@ -83,29 +69,23 @@ function updateData(){
 
 function updateStudentList(arr){
     $('tbody').empty();
-    for(var i = 0; i < arr.length; i++){
+    for(let i = 0; i < arr.length; i++){
         addStudentToDom(arr[i]);
     }
     //call the addStudentToDom function over and over that way we only add in students one way
 }
 
-/**
- * addStudentToDom - take in a student object, create html elements from the values and then append the elements
- * into the .student_list tbody
- * @param studentObj
- */
 function addStudentToDom(studentObj){
-    var new_row = $('<tr>');
-    var name = $('<td>').text(studentObj.name);
-    var course = $('<td>').text(studentObj.course);
-    var grade = $('<td>').text(studentObj.grade);
-    var delete_button = $('<button>').attr('type', 'button').addClass('delete_button btn btn-danger').text('Delete');
-    new_row.append(name, course, grade, delete_button);
+    let new_row = $('<tr>');
+    let name = $('<td>').text(studentObj.name);
+    let course = $('<td>').text(studentObj.course);
+    let grade = $('<td>').text(studentObj.grade);
+    let delete_button = $('<button>').attr('type', 'button').addClass('delete_button btn btn-danger').text('Delete');
+    let edit_button = $('<button>').attr('type', 'button').click(editStudent).addClass('edit_button btn btn-success').text('Edit');
+    new_row.append(name, course, grade, delete_button, edit_button);
     $('tbody').append(new_row);
 }
-/**
- * reset - resets the application to initial state. Global variables reset, DOM get reset to initial load state
- */
+
 function reset(){
     student_array = [];
     clearAddStudentForm();
@@ -119,15 +99,19 @@ function deleteStudent(){
 }
 
 function removeStudent(event){
-    var row = $(event.target).parent();
+    let row = $(event.target).parent();
     row = row[0].rowIndex;
     student_array.splice(row-1, 1);
     updateData();
 }
 
+function editStudent(){
+
+}
+
+
 function get_data_from_server(){
     $('.data_button').click(function(){
-        console.log('click initiated');
         $.ajax({
             data: {'api_key': '8KyFdlyzfV' },
             dataType: 'json',
@@ -135,7 +119,6 @@ function get_data_from_server(){
             method: "POST",
             success: function(result) {
                 console.log('AJAX Success function called, with the following result:', result);
-                /*console.log(student_array);*/
                 student_array = student_array.concat(result.data);
                 updateData();
             },
@@ -143,7 +126,6 @@ function get_data_from_server(){
                 console.log('error');
             }
         });
-        console.log('End of click function');
     });
 }
 
