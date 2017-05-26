@@ -2,24 +2,45 @@ $(document).ready(function() {
     $('#student_grade').attr('type', 'number');
     $('.add_button').click(addClicked);
     $('.cancel_button').click(cancelClicked);
-    deleteStudent();
-    get_data_from_server();
+    $('.update_button').hide();
+    $('#edit_student_header').hide();
+    $('.cancel_edit').hide();
+    applyClickHandlers();
 });
 
+function applyClickHandlers(){
+    $('tbody').on('click', 'button.delete_button', function(){
+        removeStudent(event);
+    });
+
+    $('div').on('click', 'button.update_button', function(){
+        changeStudentInfo(row_being_changed);
+    });
+
+    $('div').on('click', 'button.cancel_edit', function(){
+        cancelEditStudent();
+    })
+}
+
+
 let student_array = [];
+let in_edit_mode = false;
+let row_being_changed = null;
 
 function addClicked(){
-    //call addstudent
     addStudent();
-    //call clearaddstudentform
     clearAddStudentForm();
-    //call updateStudentList
     updateData();
 }
 
 function cancelClicked(){
-    //call clearAddStudentForm
     clearAddStudentForm();
+}
+
+function cancelEditStudent(){
+    clearAddStudentForm();
+    show_original_elements();
+    updateData();
 }
 
 function addStudent(){
@@ -77,11 +98,11 @@ function updateStudentList(arr){
 
 function addStudentToDom(studentObj){
     let new_row = $('<tr>');
-    let name = $('<td>').text(studentObj.name);
-    let course = $('<td>').text(studentObj.course);
-    let grade = $('<td>').text(studentObj.grade);
+    let name = $('<td>').text(studentObj.name).addClass('name');
+    let course = $('<td>').text(studentObj.course).addClass('course');
+    let grade = $('<td>').text(studentObj.grade).addClass('grade');
     let delete_button = $('<button>').attr('type', 'button').addClass('delete_button btn btn-danger').text('Delete');
-    let edit_button = $('<button>').attr('type', 'button').click(editStudent).addClass('edit_button btn btn-success').text('Edit');
+    let edit_button = $('<button>').attr('type', 'button').click(editStudent).addClass('edit_button btn btn-primary').text('Update');
     new_row.append(name, course, grade, delete_button, edit_button);
     $('tbody').append(new_row);
 }
@@ -92,12 +113,6 @@ function reset(){
     $('tbody').empty();
 }
 
-function deleteStudent(){
-    $('tbody').on('click', 'button', function(){
-        removeStudent(event);
-    })
-}
-
 function removeStudent(event){
     let row = $(event.target).parent();
     row = row[0].rowIndex;
@@ -105,28 +120,60 @@ function removeStudent(event){
     updateData();
 }
 
-function editStudent(){
-
+function changeStudentInfo(){
+    updateStudentInfo(row_being_changed);
+    clearAddStudentForm();
+    updateData();
+    show_original_elements();
 }
 
+function updateStudentInfo(row_being_changed){
+    let name = $('#student_name').val();
+    let course = $('#student_course').val();
+    let grade = $('#student_grade').val();
+    if(name === '' || course === '' || grade === ''){
+        return;
+    }
+    if(grade < 0){
+        return;
+    }
+    for(let i = 0; i< student_array.length; i++){
+        if(student_array[i].name == row_being_changed[0].children[0].textContent &&
+            student_array[i].grade == row_being_changed[0].children[2].textContent){
+                student_array[i].name = name;
+                student_array[i].course = course;
+                student_array[i].grade = grade;
+        }
+    }
+}
 
-function get_data_from_server(){
-    $('.data_button').click(function(){
-        $.ajax({
-            data: {'api_key': '8KyFdlyzfV' },
-            dataType: 'json',
-            url: 'http://s-apis.learningfuze.com/sgt/get',
-            method: "POST",
-            success: function(result) {
-                console.log('AJAX Success function called, with the following result:', result);
-                student_array = student_array.concat(result.data);
-                updateData();
-            },
-            error: function () {
-                console.log('error');
-            }
-        });
-    });
+function editStudent(){
+    let row = $(event.target).parent();
+    row_being_changed = row;
+    in_edit_mode = true;
+    let name = row[0].children[0].textContent;
+    let course = row[0].children[1].textContent;
+    let grade = row[0].children[2].textContent;
+    let delete_button = row[0].children[3];
+    $(this).hide();
+    $(delete_button).hide();
+    $('#student_name').val(name);
+    $('#student_course').val(course);
+    $('#student_grade').val(grade);
+    $('#edit_student_header').show().text('Edit Student ' + name);
+    show_edit_student_elements();
+}
+
+function show_edit_student_elements(){
+    $('#add_student_header, .cancel_button, .add_button').hide();
+    $('.cancel_edit, .update_button').show();
+    $('.delete_button').prop('disabled', true);
+    $('.edit_button').prop('disabled', true);
+}
+
+function show_original_elements(){
+    $('#add_student_header, .cancel_button, .add_button, .delete_button, .edit_button').show();
+    $('#edit_student_header, .cancel_edit, .update_button').hide();
 }
 
 

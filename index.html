@@ -7,25 +7,29 @@
     <script src="script.js"></script>
     <meta name="viewport" content="initial-scale=1, user-scalable=no">
     <style>
-        .student-edit-form {
-            width: 75%;
+        .delete_button {
+            margin-right: 5px;
+        }
+        @media only screen and (max-width: 590px) {
+            .avgGrade {
+                float: right;
+            }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="page-header">
-        <!-- only show this element when the isnt on mobile -->
         <h1 class="hidden-xs">Student Grade Table
             <small class="pull-right">Grade Average : <span class="avgGrade label label-default">0</span></small>
         </h1>
-        <!-- only show this element when the user gets to a mobile version -->
         <h3 class="visible-xs">Student Grade Table
             <small>Grade Average : <span class="avgGrade label label-default">0</span></small>
         </h3>
     </div>
     <div class="form-group pull-right student-add-form col-sm-3">
-        <h4>Add Student</h4>
+        <h4 id="add_student_header">Add Student</h4>
+        <h4 id="edit_student_header"></h4>
         <div class="form-group input-group">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-user"></span>
@@ -44,11 +48,10 @@
             </span>
             <input type="text" class="form-control" name="student_grade" id="student_grade" placeholder="Student Grade">
         </div>
-        <button type="button" class="btn btn-success add_button" onclick="">Add</button>
-        <button type="button" class="btn btn-default cancel_button" onclick="">Cancel</button>
-        <br>
-        <br>
-        <button type="button" class="btn btn-info data_button" onclick="">Get Data From Server</button>
+        <button type="button" class="btn btn-success add_button">Add</button>
+        <button type="button" class="btn btn-default cancel_button">Cancel</button>
+        <button type="button" class="btn btn-primary update_button">Update</button>
+        <button type="button" class="btn btn-default cancel_edit">Cancel</button>
     </div>
     <div class="student-list-container col-sm-9 pull-left">
         <table class="student-list table">
@@ -63,29 +66,6 @@
             <tbody>
             </tbody>
         </table>
-    </div>
-    <div class="form-group pull-left student-edit-form col-sm-3">
-        <h4>Add Student</h4>
-        <div class="form-group input-group">
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-user"></span>
-            </span>
-            <input type="text" class="form-control" name="student_name" id="edit_name" placeholder="Student Name">
-        </div>
-        <div class="form-group input-group">
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-list-alt"></span>
-            </span>
-            <input type="text" class="form-control" name="student_course" id="edit_course" placeholder="Student Course">
-        </div>
-        <div class="form-group input-group">
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-education"></span>
-            </span>
-            <input type="text" class="form-control" name="student_grade" id="edit_grade" placeholder="Student Grade">
-        </div>
-        <button type="button" class="btn btn-primary save_button">Save</button>
-        <button type="button" class="btn btn-default cancel_edit_button">Cancel</button>
     </div>
 </div>
 </body>
