@@ -1,49 +1,52 @@
 $(document).ready(function() {
     $('#student_grade').attr('type', 'number');
-    $('.add_button').click(addClicked);
-    $('.cancel_button').click(cancelClicked);
+    $('.add_button').click(add_clicked);
+    $('.cancel_button').click(cancel_clicked);
     $('.update_button').hide();
     $('#edit_student_header').hide();
     $('.cancel_edit').hide();
-    applyClickHandlers();
+    apply_click_handlers();
 });
 
-function applyClickHandlers(){
+//Apply click handler to DOM elements to ensure correct functionality
+function apply_click_handlers(){
     $('tbody').on('click', 'button.delete_button', function(){
-        removeStudent(event);
+        remove_student(event);
     });
 
     $('div').on('click', 'button.update_button', function(){
-        changeStudentInfo(row_being_changed);
+        change_student_info(row_being_changed);
     });
 
     $('div').on('click', 'button.cancel_edit', function(){
-        cancelEditStudent();
+        cancel_edit_student();
     })
 }
 
-
+//Global Variables to keep state of application in line.
 let student_array = [];
 let in_edit_mode = false;
 let row_being_changed = null;
 
-function addClicked(){
-    addStudent();
-    clearAddStudentForm();
-    updateData();
+//Runs every time the add button has been clicked
+function add_clicked(){
+    add_student();
+    clear_add_student_form();
+    update_data();
 }
 
-function cancelClicked(){
-    clearAddStudentForm();
+function cancel_clicked(){
+    clear_add_student_form();
 }
 
-function cancelEditStudent(){
-    clearAddStudentForm();
+function cancel_edit_student(){
+    clear_add_student_form();
     show_original_elements();
-    updateData();
+    update_data();
 }
 
-function addStudent(){
+//Adds new student to the DOM as well as the student_array
+function add_student(){
     let name = $('#student_name').val();
     let course = $('#student_course').val();
     let grade = $('#student_grade').val();
@@ -61,13 +64,15 @@ function addStudent(){
     student_array.push(new_student_obj);
 }
 
-function clearAddStudentForm(){
+//Clears form
+function clear_add_student_form(){
     $('#student_name').val('');
     $('#student_course').val('');
     $('#student_grade').val('');
 }
 
-function calculateAverage(arr){
+//Function to grab to grade of every student in the student_array to find the average of all the students.
+function calculate_average(arr){
     // shows average into span with all students combined average
     let result = [];
     let total = 0;
@@ -83,51 +88,53 @@ function calculateAverage(arr){
     return avg;
 }
 
-function updateData(){
-    updateStudentList(student_array);
-    calculateAverage(student_array);
+//Updates and displays the information on the application.
+function update_data(){
+    update_student_list(student_array);
+    calculate_average(student_array);
 }
 
-function updateStudentList(arr){
+function update_student_list(arr){
     $('tbody').empty();
     for(let i = 0; i < arr.length; i++){
-        addStudentToDom(arr[i]);
+        add_student_to_dom(arr[i]);
     }
-    //call the addStudentToDom function over and over that way we only add in students one way
 }
 
-function addStudentToDom(studentObj){
+function add_student_to_dom(studentObj){
     let new_row = $('<tr>');
     let name = $('<td>').text(studentObj.name).addClass('name');
     let course = $('<td>').text(studentObj.course).addClass('course');
     let grade = $('<td>').text(studentObj.grade).addClass('grade');
     let delete_button = $('<button>').attr('type', 'button').addClass('delete_button btn btn-danger').text('Delete');
-    let edit_button = $('<button>').attr('type', 'button').click(editStudent).addClass('edit_button btn btn-primary').text('Update');
+    let edit_button = $('<button>').attr('type', 'button').click(edit_student).addClass('edit_button btn btn-primary').text('Update');
     new_row.append(name, course, grade, delete_button, edit_button);
     $('tbody').append(new_row);
 }
 
 function reset(){
     student_array = [];
-    clearAddStudentForm();
+    clear_add_student_form();
     $('tbody').empty();
 }
 
-function removeStudent(event){
+//Removes student from the table.
+function remove_student(event){
     let row = $(event.target).parent();
     row = row[0].rowIndex;
     student_array.splice(row-1, 1);
-    updateData();
+    update_data();
 }
 
-function changeStudentInfo(){
-    updateStudentInfo(row_being_changed);
-    clearAddStudentForm();
-    updateData();
+function change_student_info(){
+    update_student_info(row_being_changed);
+    clear_add_student_form();
+    update_data();
     show_original_elements();
 }
 
-function updateStudentInfo(row_being_changed){
+//changes student information. O(n)
+function update_student_info(row_being_changed){
     let name = $('#student_name').val();
     let course = $('#student_course').val();
     let grade = $('#student_grade').val();
@@ -147,7 +154,9 @@ function updateStudentInfo(row_being_changed){
     }
 }
 
-function editStudent(){
+//hides add student elements in exhange for edit student of the particular student whos information needs to be changed
+//also displays the students information in the form.
+function edit_student(){
     let row = $(event.target).parent();
     row_being_changed = row;
     in_edit_mode = true;
