@@ -6,6 +6,7 @@ $(document).ready(function() {
     $('#edit_student_header').hide();
     $('.cancel_edit').hide();
     apply_click_handlers();
+    update_data();
 });
 
 //Apply click handler to DOM elements to ensure correct functionality
@@ -24,7 +25,13 @@ function apply_click_handlers(){
 }
 
 //Global Variables to keep state of application in line.
-let student_array = [];
+let student_array = [
+    { name: 'John Yosas', course: 'ReactJS', grade: 90 },
+    { name: 'Ashlee Flores', course: 'Court System', grade: 95 },
+    { name: 'Andy Ong', course: 'Node.js', grade: 98 },
+    { name: 'Thomas Verne', course: 'Economics', grade: 66 },
+    { name: 'Jessica Wright', course: 'Business', grade: 78 },
+];
 let in_edit_mode = false;
 let row_being_changed = null;
 
@@ -184,5 +191,3 @@ function show_original_elements(){
     $('#add_student_header, .cancel_button, .add_button, .delete_button, .edit_button').show();
     $('#edit_student_header, .cancel_edit, .update_button').hide();
 }
-
-
