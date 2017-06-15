@@ -80,7 +80,6 @@ function clear_add_student_form(){
 
 //Function to grab to grade of every student in the student_array to find the average of all the students.
 function calculate_average(arr){
-    // shows average into span with all students combined average
     let result = [];
     let total = 0;
     for(let i = 0; i < arr.length; i++){
