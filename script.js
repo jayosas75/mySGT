@@ -9,7 +9,7 @@ $(document).ready(function() {
     update_data();
 });
 
-//Apply click handler to DOM elements to ensure correct functionality
+/*Apply click handler to DOM elements to ensure correct functionality*/
 function apply_click_handlers(){
     $('tbody').on('click', 'button.delete_button', function(){
         remove_student(event);
@@ -24,7 +24,7 @@ function apply_click_handlers(){
     })
 }
 
-//Global Variables to keep state of application in line.
+/*Global Variables to keep state of application in line.*/
 let student_array = [
     { name: 'John Yosas', course: 'ReactJS', grade: 90 },
     { name: 'Ashlee Flores', course: 'Court System', grade: 95 },
@@ -35,7 +35,7 @@ let student_array = [
 let in_edit_mode = false;
 let row_being_changed = null;
 
-//Runs every time the add button has been clicked
+/*Runs every time the add button has been clicked*/
 function add_clicked(){
     add_student();
     clear_add_student_form();
@@ -52,7 +52,7 @@ function cancel_edit_student(){
     update_data();
 }
 
-//Adds new student to the DOM as well as the student_array
+/*Adds new student to the DOM as well as the student_array*/
 function add_student(){
     let name = $('#student_name').val();
     let course = $('#student_course').val();
@@ -71,14 +71,14 @@ function add_student(){
     student_array.push(new_student_obj);
 }
 
-//Clears form
+/*Clears form*/
 function clear_add_student_form(){
     $('#student_name').val('');
     $('#student_course').val('');
     $('#student_grade').val('');
 }
 
-//Function to grab to grade of every student in the student_array to find the average of all the students.
+/*Function to grab to grade of every student in the student_array to find the average of all the students.*/
 function calculate_average(arr){
     let result = [];
     let total = 0;
@@ -94,7 +94,7 @@ function calculate_average(arr){
     return avg;
 }
 
-//Updates and displays the information on the application.
+/*Updates and displays the information on the application.*/
 function update_data(){
     update_student_list(student_array);
     calculate_average(student_array);
@@ -124,7 +124,7 @@ function reset(){
     $('tbody').empty();
 }
 
-//Removes student from the table.
+/*Removes student from the table.*/
 function remove_student(event){
     let row = $(event.target).parent();
     row = row[0].rowIndex;
@@ -139,7 +139,7 @@ function change_student_info(){
     show_original_elements();
 }
 
-//changes student information. O(n)
+/*changes student information. O(n)*/
 function update_student_info(row_being_changed){
     let name = $('#student_name').val();
     let course = $('#student_course').val();
@@ -160,8 +160,8 @@ function update_student_info(row_being_changed){
     }
 }
 
-//hides add student elements in exhange for edit student of the particular student whos information needs to be changed
-//also displays the students information in the form.
+/*hides add student elements in exhange for edit student of the particular student whos information needs to be changed
+also displays the students information in the form.*/
 function edit_student(){
     let row = $(event.target).parent();
     row_being_changed = row;
